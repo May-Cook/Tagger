@@ -27,6 +27,14 @@ CREATE TABLE IF NOT EXISTS zombies (
     last_name TEXT
 )
 """)
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS spectators (
+    player_id TEXT PRIMARY KEY,
+    braincode TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT
+)
+""")
 conn.commit()
 conn.close()
 
