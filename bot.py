@@ -447,6 +447,38 @@ async def revive(ctx, braincode: str):
     finally:
         conn.close()
 
+@bot.command()
+async def spectate(ctx):
+    """Assigns the 'Spectator' role and removes `Human` and `Zombie` roles"""
+    try:
+        await ctx.message.delete()
+    except discord.Forbidden:
+        await ctx.send("I do not have permission to delete messages.")
+
+    if ctx.channel.name == "bot-commands":
+        guild = ctx.guild
+        member = ctx.author
+        human_role = discord.utils.get(guild.roles, name="Human")
+        zombie_role = discord.utils.get(guild.roles, name="Zombie")
+        spectator_role = discord.utils.get(guild.roles, name="Spectator")
+
+        if not spectator_role_role:
+            await ctx.send("'Spectator' role does not exist. Please create it and try again.")
+            return
+
+        if spectator_role in member.roles:
+            await ctx.send("You are already a spectator.")
+
+        if human_role in member.roles or zombie_role in member.roles:
+            member.remove_roles(zombie_role, human_role)
+            return
+
+
+        await member.add_roles(spectator_role)
+    else:
+        await ctx.send("You must use this command in the `#bot-commands` channel")
+
+
 @bot.command(name="reset")
 async def reset(ctx):
     """ Resets the entire game, restoring all joined players to Human and issuing new braincodes. Only run by Mods or Committee"""
