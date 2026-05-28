@@ -141,7 +141,7 @@ class AdminCommands(commands.Cog, name="Admin"):
                 new_braincode = "".join(random.sample(words, 3))
 
                 cursor.execute("UPDATE players SET braincode = ?, team = ? WHERE braincode = ?",
-                               (new_braincode, "Human", braincode))
+                               (new_braincode, "human", braincode))
                 conn.commit()
 
                 human_chat_channel = discord.utils.get(guild.text_channels, name="human-chat")
@@ -212,6 +212,7 @@ class AdminCommands(commands.Cog, name="Admin"):
                 await ctx.send(f"Error processing {member.display_name}: {e}")
 
         await ctx.send("Game has been reset.")
+        conn.close()
     @commands.command(name="end")
     async def end(self, ctx):
 
