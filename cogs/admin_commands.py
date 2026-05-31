@@ -210,12 +210,15 @@ class AdminCommands(commands.Cog, name="Admin"):
         conn = sqlite3.connect(db)
         cursor = conn.cursor()
 
+        cursor.execute("DELETE FROM tags") # wipe all tag data from in the database
+        conn.commit()
+
         guild = ctx.guild
         human_role = discord.utils.get(guild.roles, name="Human")
         zombie_role = discord.utils.get(guild.roles, name="Zombie")
         player_role = discord.utils.get(guild.roles, name="Player")
 
-        if not human_role or not zombie_role or not Player:
+        if not human_role or not zombie_role:
             await ctx.send("Error: Required roles not found in the server.")
             return
         
@@ -236,16 +239,11 @@ class AdminCommands(commands.Cog, name="Admin"):
                 else:
                     pass
                 
-
-        
-        cursor.execute("DELETE FROM tags") # wipe all tag data from in the database
-
-        conn.commit()
-        conn.close()
-
+            except Exception as e:
+                await ctx.send(f"Error processing {member.display_name}: {e}")
 
         await ctx.send("Game has been reset.")
-
+        conn.close()
 
 #             except discord.Forbidden:
 #                 await ctx.send(f"Could not reset roles for {member.display_name}.")
